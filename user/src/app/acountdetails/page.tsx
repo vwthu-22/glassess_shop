@@ -16,6 +16,7 @@ export default function AccountDetails() {
     useEffect(() => {
         if (typeof window !== "undefined") {
             const storedUser = localStorage.getItem("user");
+            console.log("📦 Dữ liệu user trong localStorage:", storedUser);
             if (storedUser) {
                 try {
                     const parsedUser = JSON.parse(storedUser);
@@ -57,28 +58,29 @@ export default function AccountDetails() {
             router.push("/log/index.html");
             return;
         }
-    
+
         try {
-            const response = await fetch("https://glassmanagement.vercel.app/api/update-user-info", {
-                method: "POST",
+            const id = user.id;
+            const response = await fetch(`http://localhost:3000/api/v1/users/${id}`, {
+                method: "PUT",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(user),
             });
-    
+
             if (!response.ok) throw new Error("Cập nhật thất bại!");
-    
+
             const result = await response.json();
-    
+
             console.log("📢 Dữ liệu trả về từ API:", result); // Kiểm tra response
-    
+
             if (!result.message || !localStorage.getItem("user")) {
                 throw new Error("Dữ liệu API trả về không hợp lệ!");
             }
-    
+
             // Lấy dữ liệu cũ từ localStorage
             const storedUser = JSON.parse(localStorage.getItem("user")!);
-    
+
             // Cập nhật dữ liệu cũ với dữ liệu mới
             const updatedUser = {
                 ...storedUser,
@@ -86,7 +88,7 @@ export default function AccountDetails() {
                 address: user.address || storedUser.address,
                 phone: user.phone || storedUser.phone,
             };
-    
+
             localStorage.setItem("user", JSON.stringify(updatedUser));
             alert("Cập nhật thành công!");
             router.push("/profile");
@@ -96,7 +98,7 @@ export default function AccountDetails() {
             alert("Có lỗi xảy ra, vui lòng thử lại!");
         }
     };
-    
+
     return (
         <div className="mx-32 mb-20 mt-10">
             <div className="flex justify-center text-black py-10 rounded-lg bg-red-50 w-full">

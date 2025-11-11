@@ -221,7 +221,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </svg>
                   Customer
                 </Link>
-              </li>
+              </li> 
               <li>
                 <Link
                   href="/dashboard/order"

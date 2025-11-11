@@ -11,64 +11,6 @@ loginBtn.addEventListener("click", () => {
 });
 
 document.querySelector(".sign-up form").addEventListener("submit", async (event) => {
-<<<<<<< HEAD
-    event.preventDefault();
-
-    const name = event.target.querySelector("input[type='text']").value;
-    const email = event.target.querySelector("input[type='email']").value;
-    const password = event.target.querySelector("input[type='password']").value;
-
-    try {
-        const response = await fetch("https://glassmanagement.vercel.app/api/signup", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password }),
-        });
-
-        const data = await response.json();
-
-        if (response.status === 201) {
-            alert("Đăng ký thành công! Hãy đăng nhập.");
-            container.classList.remove("active");
-        } else {
-            alert(data.message || "Đăng ký thất bại!");
-        }
-    } catch (error) {
-        console.error("Lỗi:", error);
-        alert("Lỗi kết nối đến server!");
-    }
-});
-
-document.querySelector(".sign-in form").addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const email = event.target.querySelector("input[type='email']").value;
-    const password = event.target.querySelector("input[type='password']").value;
-
-    try {
-        const response = await fetch("https://glassmanagement.vercel.app/api/login", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-
-        if (response.status === 200) {
-            alert("Đăng nhập thành công!");
-            localStorage.setItem("accessToken", data.accessToken);
-            window.location.href = "/";
-        } else {
-            alert(data.message || "Đăng nhập thất bại!");
-        }
-    } catch (error) {
-        console.error("Lỗi:", error);
-        alert("Lỗi kết nối đến server!");
-    }
-});
-=======
   event.preventDefault();
 
   const name = event.target.querySelector("input[type='text']").value;
@@ -76,7 +18,7 @@ document.querySelector(".sign-in form").addEventListener("submit", async (event)
   const password = event.target.querySelector("input[type='password']").value;
 
   try {
-    const response = await fetch("https://glassmanagement.vercel.app/api/signup", {
+    const response = await fetch("http://localhost:3000/api/v1/users/register", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -104,7 +46,7 @@ document.querySelector(".sign-in form").addEventListener("submit", async (event)
   const password = event.target.querySelector("input[type='password']").value;
 
   try {
-    const response = await fetch("https://glassmanagement.vercel.app/api/login", {
+    const response = await fetch("http://localhost:3000/api/v1/users/login", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -124,26 +66,19 @@ document.querySelector(".sign-in form").addEventListener("submit", async (event)
     }
 
     const data = await response.json();
-    console.log("Parsed Data:", data);
 
-    if (data.userInfo) {
-      localStorage.setItem("accessToken", data.accessToken); // Lưu accessToken
-      localStorage.setItem("user", JSON.stringify({
-        id: data.userInfo.id,
-        name: data.userInfo.name,
-        phone: data.userInfo.phone,
-        address: data.userInfo.address,
-        email: data.userInfo.email
-      }));
-
+    if (data.access_token && data.userInfo) {
+      localStorage.setItem("accessToken", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.userInfo)); 
       alert("Đăng nhập thành công!");
-      window.location.href = "/"; // Điều hướng sau khi đăng nhập thành công
+      window.location.href = "/";
     } else {
-      alert(data.message || "Đăng nhập thất bại!");
+      alert(data.msg || "Đăng nhập thất bại!");
     }
+
+
   } catch (error) {
     console.error("Lỗi:", error);
     alert("Lỗi kết nối đến server hoặc thông tin không hợp lệ!");
   }
 });
->>>>>>> 1df6ad144f4d27e0d990abfe1c41d3017d9afc89

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -31,11 +31,18 @@ export default function ProductDetailsPage({ params }: { params: { productId: st
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+     
+    const fetchedProduct = useRef(false); // ✅ Tránh gọi API trùng lặp
+
     useEffect(() => {
         async function fetchProductDetails() {
+            if (!params.productId || fetchedProduct.current) return; // ✅ Ngăn gọi API trùng lặp
+            fetchedProduct.current = true; // Đánh dấu đã gọi API
+            
             setLoading(true);
             setError(null);
-            console.log("Fetching product with ID:", params.productId); // Kiểm tra ID
+            console.log("Fetching product with ID:", params.productId);
+
             try {
                 const response = await fetch("https://glassmanagement.vercel.app/api/product/get-paginated", {
                     method: "POST",
@@ -54,14 +61,14 @@ export default function ProductDetailsPage({ params }: { params: { productId: st
                 } else {
                     setError("Product not found.");
                 }
-                setLoading(false);
-            } catch (err: any) {
+            } catch (err:any) {
                 setError(err.message);
+            } finally {
                 setLoading(false);
             }
         }
 
-        if (params.productId) fetchProductDetails();
+        fetchProductDetails();
     }, [params.productId]);
 
     useEffect(() => {
